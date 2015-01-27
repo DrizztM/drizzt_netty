@@ -16,8 +16,9 @@ import org.apache.log4j.Logger;
 
 public class TcpClient {
 	private static final Logger logger = Logger.getLogger(TcpClient.class);
+	// public static String HOST = "115.29.112.103";
 	public static String HOST = "127.0.0.1";
-	public static int PORT = 8090;
+	public static int PORT = 9999;
 
 	public static Bootstrap bootstrap = getBootstrap();
 	public static Channel channel = getChannel(HOST, PORT);
@@ -35,7 +36,7 @@ public class TcpClient {
 			@Override
 			protected void initChannel(Channel ch) throws Exception {
 				ChannelPipeline pipeline = ch.pipeline();
-					pipeline.addLast("decoder",
+				pipeline.addLast("decoder",
 						new StringDecoder(CharsetUtil.UTF_8));
 				pipeline.addLast("encoder",
 						new StringEncoder(CharsetUtil.UTF_8));
@@ -58,7 +59,7 @@ public class TcpClient {
 		return channel;
 	}
 
-	public static void sendMsg(String msg) throws Exception {
+	public void sendMsg(String msg) throws Exception {
 		if (channel != null) {
 			channel.writeAndFlush(msg).sync();
 		} else {
@@ -67,16 +68,6 @@ public class TcpClient {
 	}
 
 	public static void main(String[] args) throws Exception {
-		try {
-			long t0 = System.nanoTime();
-			for (int i = 0; i < 100; i++) {
-				TcpClient.sendMsg(i + "你好1");
-			}
-			long t1 = System.nanoTime();
-			System.out.println((t1 - t0) / 1000000.0);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new TcpClient().sendMsg("你好");
 	}
 }

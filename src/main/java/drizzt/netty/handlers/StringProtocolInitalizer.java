@@ -10,12 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-/**
- * Just a dummy protocol mainly to show the ServerBootstrap being initialized.
- * 
- * @author Abraham Menacherry
- * 
- */
 @Component
 @Qualifier("springProtocolInitializer")
 public class StringProtocolInitalizer extends ChannelInitializer<SocketChannel> {

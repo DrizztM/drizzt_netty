@@ -17,18 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import drizzt.netty.handlers.StringProtocolInitalizer;
 
-
 @Configuration
-@ComponentScan("drizzt.netty")
-@PropertySource("classpath:netty-server.properties")
-public class SpringConfig {
+public class NettyConfig {
 
 	@Value("${boss.thread.count}")
 	private int bossCount;
@@ -98,14 +92,4 @@ public class SpringConfig {
 		return new StringDecoder(CharsetUtil.UTF_8);
 	}
 
-	/**
-	 * Necessary to make the Value annotations work.
-	 * 
-	 * @return
-	 */
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
-	
 }
