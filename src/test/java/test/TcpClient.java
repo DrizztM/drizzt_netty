@@ -68,6 +68,6 @@ public class TcpClient {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new TcpClient().sendMsg("你好");
+		new TcpClient().sendMsg("start");
 	}
 }

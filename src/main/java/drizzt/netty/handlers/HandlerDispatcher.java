@@ -1,7 +1,5 @@
 package drizzt.netty.handlers;
 
-import io.netty.channel.ChannelFutureListener;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -17,7 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import drizzt.netty.domain.ClientRequest;
-import drizzt.netty.queue.MessageQueue;
+import drizzt.netty.domain.MessageQueue;
 
 /**
  * 类名称：HandlerDispatcher <br/>
@@ -107,8 +105,8 @@ public class HandlerDispatcher implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			clientRequest.getChannel().writeAndFlush("close")
-					.addListener(ChannelFutureListener.CLOSE);
+			clientRequest.getChannel().writeAndFlush("处理完毕");
+			// .addListener(ChannelFutureListener.CLOSE)
 		}
 
 	}

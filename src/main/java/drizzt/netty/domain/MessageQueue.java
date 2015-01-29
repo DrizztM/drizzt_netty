@@ -1,8 +1,6 @@
-package drizzt.netty.queue;
+package drizzt.netty.domain;
 
 import java.util.Queue;
-
-import drizzt.netty.domain.ClientRequest;
 
 public final class MessageQueue {
 

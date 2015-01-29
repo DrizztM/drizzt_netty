@@ -26,8 +26,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import drizzt.netty.domain.ClientRequest;
+import drizzt.netty.domain.MessageQueue;
 import drizzt.netty.handlers.StringProtocolInitalizer;
-import drizzt.netty.queue.MessageQueue;
 
 @Configuration
 public class NettyConfig {

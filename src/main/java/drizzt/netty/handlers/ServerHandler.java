@@ -13,10 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import drizzt.netty.domain.ClientRequest;
-import drizzt.netty.queue.MessageQueue;
+import drizzt.netty.domain.MessageQueue;
 
 @Component
 @Qualifier("serverHandler")
@@ -27,8 +28,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 			.getLogger(ServerHandler.class);
 
 	@Autowired
+	private Environment env;
+
+	@Autowired
 	private HandlerDispatcher handlerDispatcher;
-	
+
 	@Resource
 	private Map<Integer, MessageQueue> queueMap;
 
@@ -39,10 +43,17 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 
 	public void channelRead0(ChannelHandlerContext ctx, String msg)
 			throws Exception {
+		int vipSize = Integer.parseInt(env.getProperty("queue.vipSize"));
+		int userSize = Integer.parseInt(env.getProperty("queue.userSize"));
 		Logger.info("收到客户端信息：" + ctx.channel().hashCode() + "_" + msg);
 		ctx.channel().writeAndFlush("18888889527");
 		ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg);
-		queueMap.get((int)(Math.random()*60)).add(clientRequest);
+		queueMap.get(Math.abs(ctx.channel().hashCode())%(vipSize+userSize)).add(clientRequest);
 	}
-	
+
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+			throws Exception {
+		super.exceptionCaught(ctx, cause);
+	}
+
 }
