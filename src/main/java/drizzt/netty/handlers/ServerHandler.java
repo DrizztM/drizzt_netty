@@ -4,9 +4,10 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 
 	@Autowired
 	private HandlerDispatcher handlerDispatcher;
+	
+	@Resource
+	private Map<Integer, MessageQueue> queueMap;
 
 	@PostConstruct
 	public void init() {
@@ -35,22 +39,10 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 
 	public void channelRead0(ChannelHandlerContext ctx, String msg)
 			throws Exception {
-		Logger.info("收到客户端信息：" + msg);
+		Logger.info("收到客户端信息：" + ctx.channel().hashCode() + "_" + msg);
 		ctx.channel().writeAndFlush("18888889527");
-		System.out.println(ctx.channel().hashCode());
-		MessageQueue messageQueue = new MessageQueue(
-				new ConcurrentLinkedQueue<ClientRequest>());
 		ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg);
-		messageQueue.add(clientRequest);
-		handlerDispatcher.addMessageQueue(ctx.channel().hashCode(), messageQueue);
+		queueMap.get((int)(Math.random()*60)).add(clientRequest);
 	}
-
-	public HandlerDispatcher getHandlerDispatcher() {
-		return handlerDispatcher;
-	}
-
-	public void setHandlerDispatcher(HandlerDispatcher handlerDispatcher) {
-		this.handlerDispatcher = handlerDispatcher;
-	}
-
+	
 }

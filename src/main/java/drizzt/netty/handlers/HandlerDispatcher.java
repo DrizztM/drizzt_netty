@@ -4,11 +4,11 @@ import io.netty.channel.ChannelFutureListener;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,14 +36,14 @@ public class HandlerDispatcher implements Runnable {
 	@Autowired
 	@Qualifier("executor")
 	private Executor executor;
-	private Map<Integer, MessageQueue> sessionMsgQ;
+	@Resource
+	private Map<Integer, MessageQueue> queueMap;
 	private boolean running;
 
 	@PostConstruct
 	public void init() {
 		if (!running) {
 			running = true;
-			sessionMsgQ = new ConcurrentHashMap<Integer, MessageQueue>();
 		}
 	}
 
@@ -54,33 +54,17 @@ public class HandlerDispatcher implements Runnable {
 
 	public void run() {
 		while (running) {
-			Set<Integer> keySet = sessionMsgQ.keySet();
+			Set<Integer> keySet = queueMap.keySet();
 			for (Integer key : keySet) {
-				MessageQueue messageQueue = sessionMsgQ.get(key);
+				MessageQueue messageQueue = queueMap.get(key);
 				if (messageQueue == null || messageQueue.size() <= 0
-						|| messageQueue.isRunning())
+						|| messageQueue.isRunning()) {
 					continue;
+				}
+				Logger.info("这是第" + key + "个map");
 				MessageWorker messageWorker = new MessageWorker(messageQueue);
 				this.executor.execute(messageWorker);
 			}
-		}
-	}
-
-	public void addMessageQueue(int channelId, MessageQueue messageQueue) {
-		sessionMsgQ.put(channelId, messageQueue);
-	}
-
-	public boolean checkMessageQueue(String key) {
-		return sessionMsgQ.containsKey(key);
-	}
-
-	/**
-	 * @param session
-	 */
-	public void removeMessageQueue(String key) {
-		MessageQueue queue = sessionMsgQ.remove(key);
-		if (queue != null) {
-			queue.clear();
 		}
 	}
 
@@ -116,7 +100,7 @@ public class HandlerDispatcher implements Runnable {
 		 * @throws InterruptedException
 		 */
 		private void handMessageQueue() {
-			Logger.info("处理：" + clientRequest.getChannel().hashCode() + "-"
+			Logger.info("处理：" + clientRequest.getChannel().hashCode() + "_"
 					+ clientRequest.getMsg());
 			try {
 				Thread.sleep(10000);
@@ -129,7 +113,4 @@ public class HandlerDispatcher implements Runnable {
 
 	}
 
-	public void setExecutor(Executor executor) {
-		this.executor = executor;
-	}
 }

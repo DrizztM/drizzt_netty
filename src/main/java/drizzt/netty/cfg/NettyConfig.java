@@ -12,6 +12,8 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -23,7 +25,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import drizzt.netty.domain.ClientRequest;
 import drizzt.netty.handlers.StringProtocolInitalizer;
+import drizzt.netty.queue.MessageQueue;
 
 @Configuration
 public class NettyConfig {
@@ -51,6 +55,12 @@ public class NettyConfig {
 	
 	@Value("${dispatcher.pool.keepAliveSecond}")
 	private int keepAliveSecond;
+	
+	@Value("${queue.vipSize}")
+	private int vipSize;
+	
+	@Value("${queue.userSize}")
+	private int userSize;
 
 	@Autowired
 	@Qualifier("springProtocolInitializer")
@@ -108,6 +118,15 @@ public class NettyConfig {
 	@Bean(name = "executor")
 	public ThreadPoolExecutor executor(){
 		return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveSecond, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory());
+	}
+	
+	@Bean(name = "queueMap")
+	public Map<Integer,MessageQueue> queueMap(){
+		Map<Integer,MessageQueue> queueMap = new ConcurrentHashMap<Integer,MessageQueue>();
+		for(int i=0;i<vipSize+userSize;i++){
+			queueMap.put(i, new MessageQueue(new ConcurrentLinkedQueue<ClientRequest>()));
+		}
+		return queueMap;
 	}
 
 }
