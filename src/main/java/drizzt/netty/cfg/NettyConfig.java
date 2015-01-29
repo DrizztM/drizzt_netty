@@ -12,6 +12,10 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,6 +42,15 @@ public class NettyConfig {
 
 	@Value("${so.backlog}")
 	private int backlog;
+	
+	@Value("${dispatcher.pool.corePoolSize}")
+	private int corePoolSize;
+	
+	@Value("${dispatcher.pool.maximumPoolSize}")
+	private int maximumPoolSize;
+	
+	@Value("${dispatcher.pool.keepAliveSecond}")
+	private int keepAliveSecond;
 
 	@Autowired
 	@Qualifier("springProtocolInitializer")
@@ -90,6 +103,11 @@ public class NettyConfig {
 	@Bean(name = "stringDecoder")
 	public StringDecoder stringDecoder() {
 		return new StringDecoder(CharsetUtil.UTF_8);
+	}
+	
+	@Bean(name = "executor")
+	public ThreadPoolExecutor executor(){
+		return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveSecond, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory());
 	}
 
 }
