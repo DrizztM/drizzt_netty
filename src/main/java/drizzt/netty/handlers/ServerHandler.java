@@ -17,7 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import drizzt.netty.domain.ClientRequest;
-import drizzt.netty.domain.MessageQueue;
+import drizzt.netty.domain.AuthQueue;
 
 @Component
 @Qualifier("serverHandler")
@@ -34,7 +34,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 	private HandlerDispatcher handlerDispatcher;
 
 	@Resource
-	private Map<Integer, MessageQueue> queueMap;
+	private Map<Integer, AuthQueue> queueMap;
 
 	@PostConstruct
 	public void init() {
@@ -53,7 +53,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
 			throws Exception {
-		super.exceptionCaught(ctx, cause);
+		System.out.println("%%%%%%%%%%%");
 	}
 
 }

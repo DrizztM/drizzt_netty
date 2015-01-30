@@ -5,6 +5,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +27,7 @@ public class StringProtocolInitalizer extends ChannelInitializer<SocketChannel> 
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
+		pipeline.addLast("timeout", new ReadTimeoutHandler(10));
 		pipeline.addLast("decoder", stringDecoder);
 		pipeline.addLast("handler", serverHandler);
 		pipeline.addLast("encoder", stringEncoder);

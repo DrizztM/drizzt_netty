@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import drizzt.netty.domain.ClientRequest;
-import drizzt.netty.domain.MessageQueue;
+import drizzt.netty.domain.AuthQueue;
 import drizzt.netty.handlers.StringProtocolInitalizer;
 
 @Configuration
@@ -121,10 +121,10 @@ public class NettyConfig {
 	}
 	
 	@Bean(name = "queueMap")
-	public Map<Integer,MessageQueue> queueMap(){
-		Map<Integer,MessageQueue> queueMap = new ConcurrentHashMap<Integer,MessageQueue>();
+	public Map<Integer,AuthQueue> queueMap(){
+		Map<Integer,AuthQueue> queueMap = new ConcurrentHashMap<Integer,AuthQueue>();
 		for(int i=0;i<vipSize+userSize;i++){
-			queueMap.put(i, new MessageQueue(new ConcurrentLinkedQueue<ClientRequest>()));
+			queueMap.put(i, new AuthQueue(new ConcurrentLinkedQueue<ClientRequest>()));
 		}
 		return queueMap;
 	}

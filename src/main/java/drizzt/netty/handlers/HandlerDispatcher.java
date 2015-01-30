@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import drizzt.netty.domain.ClientRequest;
-import drizzt.netty.domain.MessageQueue;
+import drizzt.netty.domain.AuthQueue;
 
 /**
  * 类名称：HandlerDispatcher <br/>
@@ -35,7 +35,7 @@ public class HandlerDispatcher implements Runnable {
 	@Qualifier("executor")
 	private Executor executor;
 	@Resource
-	private Map<Integer, MessageQueue> queueMap;
+	private Map<Integer, AuthQueue> queueMap;
 	private boolean running;
 
 	@PostConstruct
@@ -54,7 +54,7 @@ public class HandlerDispatcher implements Runnable {
 		while (running) {
 			Set<Integer> keySet = queueMap.keySet();
 			for (Integer key : keySet) {
-				MessageQueue messageQueue = queueMap.get(key);
+				AuthQueue messageQueue = queueMap.get(key);
 				if (messageQueue == null || messageQueue.size() <= 0
 						|| messageQueue.isRunning()) {
 					continue;
@@ -75,10 +75,10 @@ public class HandlerDispatcher implements Runnable {
 	 * @version
 	 */
 	private final class MessageWorker implements Runnable {
-		private MessageQueue messageQueue;
+		private AuthQueue messageQueue;
 		private ClientRequest clientRequest;
 
-		private MessageWorker(MessageQueue messageQueue) {
+		private MessageWorker(AuthQueue messageQueue) {
 			messageQueue.setRunning(true);
 			clientRequest = messageQueue.getClientQueue().poll();
 			this.messageQueue = messageQueue;
