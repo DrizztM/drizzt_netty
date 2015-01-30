@@ -12,8 +12,6 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -25,8 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import drizzt.netty.domain.ClientRequest;
-import drizzt.netty.domain.MessageQueue;
 import drizzt.netty.handlers.StringProtocolInitalizer;
 
 @Configuration
@@ -120,13 +116,4 @@ public class NettyConfig {
 		return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveSecond, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory());
 	}
 	
-	@Bean(name = "queueMap")
-	public Map<Integer,MessageQueue> queueMap(){
-		Map<Integer,MessageQueue> queueMap = new ConcurrentHashMap<Integer,MessageQueue>();
-		for(int i=0;i<vipSize+userSize;i++){
-			queueMap.put(i, new MessageQueue(new ConcurrentLinkedQueue<ClientRequest>()));
-		}
-		return queueMap;
-	}
-
 }

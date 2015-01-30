@@ -4,20 +4,19 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import drizzt.netty.dispatcher.AuthDispatcher;
+import drizzt.netty.domain.AuthQueue;
 import drizzt.netty.domain.ClientRequest;
-import drizzt.netty.domain.MessageQueue;
 
 @Component
 @Qualifier("serverHandler")
@@ -28,32 +27,40 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 			.getLogger(ServerHandler.class);
 
 	@Autowired
-	private Environment env;
-
-	@Autowired
-	private HandlerDispatcher handlerDispatcher;
-
-	@Resource
-	private Map<Integer, MessageQueue> queueMap;
+	private AuthDispatcher authDispatcher;
 
 	@PostConstruct
 	public void init() {
-		new Thread(handlerDispatcher).start();
+		new Thread(authDispatcher).start();
+	}
+
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		Logger.info("接入一个channel：" + ctx.channel().hashCode());
+		AuthQueue authQueue = new AuthQueue(
+				new ConcurrentLinkedQueue<ClientRequest>());
+		authDispatcher.addAuthQueue(ctx.channel().hashCode(), authQueue);
+	}
+	
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		Logger.error("关掉一个channel：" + ctx.channel().hashCode());
+		authDispatcher.removeAuthQueue(ctx.channel().hashCode());
+		ctx.channel().close();
+    }
+	
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+			throws Exception {
+		Logger.error("出现一个异常：" + ctx.channel().hashCode());
+		cause.printStackTrace();
+		authDispatcher.removeAuthQueue(ctx.channel().hashCode());
+		ctx.channel().close();
 	}
 
 	public void channelRead0(ChannelHandlerContext ctx, String msg)
 			throws Exception {
-		int vipSize = Integer.parseInt(env.getProperty("queue.vipSize"));
-		int userSize = Integer.parseInt(env.getProperty("queue.userSize"));
 		Logger.info("收到客户端信息：" + ctx.channel().hashCode() + "_" + msg);
 		ctx.channel().writeAndFlush("18888889527");
 		ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg);
-		queueMap.get(Math.abs(ctx.channel().hashCode())%(vipSize+userSize)).add(clientRequest);
-	}
-
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
-			throws Exception {
-		super.exceptionCaught(ctx, cause);
+		authDispatcher.addAuth(clientRequest);
 	}
 
 }

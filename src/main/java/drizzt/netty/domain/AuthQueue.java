@@ -2,12 +2,12 @@ package drizzt.netty.domain;
 
 import java.util.Queue;
 
-public final class MessageQueue {
+public final class AuthQueue {
 
 	private Queue<ClientRequest> clientQueue;
 	private boolean running = false;
 
-	public MessageQueue(Queue<ClientRequest> clientQueue) {
+	public AuthQueue(Queue<ClientRequest> clientQueue) {
 		this.clientQueue = clientQueue;
 	}
 
