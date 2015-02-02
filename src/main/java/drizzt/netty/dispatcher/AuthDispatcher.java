@@ -66,7 +66,8 @@ public class AuthDispatcher implements Runnable {
 				this.executor.execute(worker);
 			}
 			try {
-				Thread.sleep(Integer.parseInt(env.getProperty("dispatcher.sleepTime")));
+				Thread.sleep(Integer.parseInt(env
+						.getProperty("dispatcher.sleepTime")));
 			} catch (InterruptedException e) {
 				Logger.error("", e);
 			}
@@ -96,6 +97,7 @@ public class AuthDispatcher implements Runnable {
 			request.getChannel().close();
 			Logger.error("", new IllegalStateException());
 		} else {
+			authQueue.empty();
 			b = authQueue.add(request);
 		}
 		return b;
@@ -117,6 +119,7 @@ public class AuthDispatcher implements Runnable {
 			authQueue.setRunning(true);
 			clientRequest = authQueue.getClientQueue().poll();
 			this.authQueue = authQueue;
+			System.out.println("队列长度：" + authQueue.size());
 		}
 
 		public void run() {
@@ -135,11 +138,11 @@ public class AuthDispatcher implements Runnable {
 		private void handAuthQueue() {
 			Logger.info("处理：" + clientRequest.getChannel().hashCode() + "_"
 					+ clientRequest.getMsg());
-			// try {
-			// Thread.sleep(10000);
-			// } catch (InterruptedException e) {
-			// e.printStackTrace();
-			// }
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			clientRequest.getChannel().writeAndFlush("处理完毕");
 			// .addListener(ChannelFutureListener.CLOSE)
 		}

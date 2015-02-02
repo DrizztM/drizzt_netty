@@ -40,13 +40,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 				new ConcurrentLinkedQueue<ClientRequest>());
 		authDispatcher.addAuthQueue(ctx.channel().hashCode(), authQueue);
 	}
-	
+
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		Logger.error("关掉一个channel：" + ctx.channel().hashCode());
 		authDispatcher.removeAuthQueue(ctx.channel().hashCode());
 		ctx.channel().close();
-    }
-	
+	}
+
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
 			throws Exception {
 		Logger.error("出现一个异常：" + ctx.channel().hashCode());
@@ -58,9 +58,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 	public void channelRead0(ChannelHandlerContext ctx, String msg)
 			throws Exception {
 		Logger.info("收到客户端信息：" + ctx.channel().hashCode() + "_" + msg);
-		ctx.channel().writeAndFlush("18888889527");
-		ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg);
-		authDispatcher.addAuth(clientRequest);
+		if (msg.equals("auth")) {
+			ctx.channel().writeAndFlush("18888889527");
+			ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg);
+			authDispatcher.addAuth(clientRequest);
+		}
 	}
 
 }

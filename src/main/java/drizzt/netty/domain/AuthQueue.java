@@ -23,6 +23,14 @@ public final class AuthQueue {
 		clientQueue.clear();
 		clientQueue = null;
 	}
+	
+	/**
+	 * 名称：clear <br/>
+	 * 描述：清空消息队列 <br/>
+	*/
+	public void empty() {
+		clientQueue.clear();
+	}
 
 	/**
 	 * 名称：size <br/>
