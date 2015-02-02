@@ -7,6 +7,10 @@ public class ClientRequest {
 	private Channel channel;
 
 	private String msg;
+	
+	public ClientRequest(Channel channel) {
+		this.channel = channel;
+	}
 
 	public ClientRequest(Channel channel, String msg) {
 		this.channel = channel;

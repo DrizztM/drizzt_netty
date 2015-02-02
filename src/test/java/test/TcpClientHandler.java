@@ -9,7 +9,7 @@ public class TcpClientHandler extends SimpleChannelInboundHandler<String> {
 			throws Exception {
 		System.out.println(msg);
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -3,7 +3,7 @@ package drizzt.netty.dispatcher;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -11,7 +11,6 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -33,8 +32,7 @@ public class AuthDispatcher implements Runnable {
 			.getLogger(AuthDispatcher.class);
 
 	@Autowired
-	@Qualifier("executor")
-	private Executor executor;
+	private ThreadPoolExecutor threadPoolExecutor;
 	@Autowired
 	private Environment env;
 	private Map<Integer, AuthQueue> sessionAQ;
@@ -63,7 +61,11 @@ public class AuthDispatcher implements Runnable {
 					continue;
 				}
 				Worker worker = new Worker(authQueue);
-				this.executor.execute(worker);
+				threadPoolExecutor.execute(worker);
+				System.out.println("线程池中线程数目："
+						+ threadPoolExecutor.getPoolSize() + "，队列中等待执行的任务数目："
+						+ threadPoolExecutor.getQueue().size() + "，已执行玩别的任务数目："
+						+ threadPoolExecutor.getCompletedTaskCount());
 			}
 			try {
 				Thread.sleep(Integer.parseInt(env
@@ -119,7 +121,6 @@ public class AuthDispatcher implements Runnable {
 			authQueue.setRunning(true);
 			clientRequest = authQueue.getClientQueue().poll();
 			this.authQueue = authQueue;
-			System.out.println("队列长度：" + authQueue.size());
 		}
 
 		public void run() {
