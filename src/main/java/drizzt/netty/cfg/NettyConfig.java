@@ -43,19 +43,19 @@ public class NettyConfig {
 	@Value("${so.backlog}")
 	private int backlog;
 	
-	@Value("${dispatcher.pool.corePoolSize}")
+	@Value("${auth.pool.corePoolSize}")
 	private int corePoolSize;
 	
-	@Value("${dispatcher.pool.maximumPoolSize}")
+	@Value("${auth.pool.maximumPoolSize}")
 	private int maximumPoolSize;
 	
-	@Value("${dispatcher.pool.keepAliveSecond}")
+	@Value("${auth.pool.keepAliveSecond}")
 	private int keepAliveSecond;
 	
-	@Value("${queue.vipSize}")
+	@Value("${auth.vipSize}")
 	private int vipSize;
 	
-	@Value("${queue.userSize}")
+	@Value("${auth.userSize}")
 	private int userSize;
 
 	@Autowired

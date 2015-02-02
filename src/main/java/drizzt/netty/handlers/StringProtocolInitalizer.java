@@ -26,6 +26,7 @@ public class StringProtocolInitalizer extends ChannelInitializer<SocketChannel> 
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
+//		pipeline.addLast("timeout", new ReadTimeoutHandler(10));
 		pipeline.addLast("decoder", stringDecoder);
 		pipeline.addLast("handler", serverHandler);
 		pipeline.addLast("encoder", stringEncoder);

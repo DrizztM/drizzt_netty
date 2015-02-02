@@ -8,7 +8,6 @@ public class TcpClientHandler extends SimpleChannelInboundHandler<String> {
 	protected void channelRead0(ChannelHandlerContext ctx, String msg)
 			throws Exception {
 		System.out.println(msg);
-		ctx.channel().close();
 	}
 
 }
