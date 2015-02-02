@@ -60,7 +60,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 		Logger.info("收到客户端信息：" + ctx.channel().hashCode() + "_" + msg);
 		if (msg.equals("auth")) {
 			ctx.channel().writeAndFlush("18888889527");
-			ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg);
+			ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg,System.currentTimeMillis());
 			authDispatcher.addAuth(clientRequest);
 		}
 	}

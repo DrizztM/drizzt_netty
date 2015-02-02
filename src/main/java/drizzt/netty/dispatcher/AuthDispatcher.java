@@ -64,7 +64,7 @@ public class AuthDispatcher implements Runnable {
 				threadPoolExecutor.execute(worker);
 				System.out.println("线程池中线程数目："
 						+ threadPoolExecutor.getPoolSize() + "，队列中等待执行的任务数目："
-						+ threadPoolExecutor.getQueue().size() + "，已执行玩别的任务数目："
+						+ threadPoolExecutor.getQueue().size() + "，已执行完毕的任务数目："
 						+ threadPoolExecutor.getCompletedTaskCount());
 			}
 			try {
@@ -139,13 +139,15 @@ public class AuthDispatcher implements Runnable {
 		private void handAuthQueue() {
 			Logger.info("处理：" + clientRequest.getChannel().hashCode() + "_"
 					+ clientRequest.getMsg());
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if (System.currentTimeMillis() - clientRequest.getCurrentTime() < 30000) {
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				clientRequest.getChannel().writeAndFlush("处理完毕");
+				// .addListener(ChannelFutureListener.CLOSE)
 			}
-			clientRequest.getChannel().writeAndFlush("处理完毕");
-			// .addListener(ChannelFutureListener.CLOSE)
 		}
 
 	}
