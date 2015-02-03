@@ -139,7 +139,8 @@ public class AuthDispatcher implements Runnable {
 		private void handAuthQueue() {
 			Logger.info("处理：" + clientRequest.getChannel().hashCode() + "_"
 					+ clientRequest.getMsg());
-			if (System.currentTimeMillis() - clientRequest.getCurrentTime() < 30000) {
+			if (System.currentTimeMillis() - clientRequest.getCurrentTime() < Integer
+					.parseInt(env.getProperty("dispatcher.timeout"))) {
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
@@ -149,7 +150,6 @@ public class AuthDispatcher implements Runnable {
 				// .addListener(ChannelFutureListener.CLOSE)
 			}
 		}
-
 	}
 
 }

@@ -58,9 +58,10 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 	public void channelRead0(ChannelHandlerContext ctx, String msg)
 			throws Exception {
 		Logger.info("收到客户端信息：" + ctx.channel().hashCode() + "_" + msg);
-		if (msg.equals("auth")) {
+		if (msg.contains("auth")) {
 			ctx.channel().writeAndFlush("18888889527");
-			ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg,System.currentTimeMillis());
+			ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg,
+					System.currentTimeMillis());
 			authDispatcher.addAuth(clientRequest);
 		}
 	}
