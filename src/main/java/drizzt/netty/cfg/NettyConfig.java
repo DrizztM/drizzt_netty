@@ -52,12 +52,6 @@ public class NettyConfig {
 	@Value("${auth.pool.keepAliveSecond}")
 	private int keepAliveSecond;
 	
-	@Value("${auth.vipSize}")
-	private int vipSize;
-	
-	@Value("${auth.userSize}")
-	private int userSize;
-
 	@Autowired
 	@Qualifier("springProtocolInitializer")
 	private StringProtocolInitalizer protocolInitalizer;
