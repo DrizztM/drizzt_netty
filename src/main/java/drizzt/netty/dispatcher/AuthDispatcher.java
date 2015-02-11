@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import drizzt.netty.domain.AuthQueue;
 import drizzt.netty.domain.ClientRequest;
+import drizzt.netty.protobuf.DrizztProtocol.Msg;
 
 /**
  * 类名称：AuthDispatcher <br/>
@@ -138,15 +139,19 @@ public class AuthDispatcher implements Runnable {
 		 */
 		private void handAuthQueue() {
 			Logger.info("处理：" + clientRequest.getChannel().hashCode() + "_"
-					+ clientRequest.getMsg());
+					+ clientRequest.getMsg().getAuthRequest().getAppId());
 			if (System.currentTimeMillis() - clientRequest.getCurrentTime() < Integer
 					.parseInt(env.getProperty("dispatcher.timeout"))) {
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				clientRequest.getChannel().writeAndFlush("处理完毕");
+				// try {
+				// Thread.sleep(10000);
+				// } catch (InterruptedException e) {
+				// e.printStackTrace();
+				// }
+				Msg.Builder builder = Msg.newBuilder();
+				builder.getAuthResponseBuilder().setDes("成功");
+				builder.getAuthResponseBuilder().setResultCode("1");
+				builder.getAuthResponseBuilder().setTransId("123");
+				clientRequest.getChannel().writeAndFlush(builder.build());
 				// .addListener(ChannelFutureListener.CLOSE)
 			}
 		}

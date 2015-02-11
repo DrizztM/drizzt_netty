@@ -17,11 +17,12 @@ import org.springframework.stereotype.Component;
 import drizzt.netty.dispatcher.AuthDispatcher;
 import drizzt.netty.domain.AuthQueue;
 import drizzt.netty.domain.ClientRequest;
+import drizzt.netty.protobuf.DrizztProtocol.Msg;
 
 @Component
 @Qualifier("serverHandler")
 @Sharable
-public class ServerHandler extends SimpleChannelInboundHandler<String> {
+public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
 
 	private static final Logger Logger = LoggerFactory
 			.getLogger(ServerHandler.class);
@@ -55,15 +56,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 		ctx.channel().close();
 	}
 
-	public void channelRead0(ChannelHandlerContext ctx, String msg)
+	public void channelRead0(ChannelHandlerContext ctx, Msg msg)
 			throws Exception {
 		Logger.info("收到客户端信息：" + ctx.channel().hashCode() + "_" + msg);
-		if (msg.contains("auth")) {
-			ctx.channel().writeAndFlush("18888889527");
-			ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg,
-					System.currentTimeMillis());
-			authDispatcher.addAuth(clientRequest);
-		}
+		ctx.channel().writeAndFlush("18888889527");
+		ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg,
+				System.currentTimeMillis());
+		authDispatcher.addAuth(clientRequest);
 	}
 
 }

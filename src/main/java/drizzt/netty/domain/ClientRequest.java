@@ -1,16 +1,17 @@
 package drizzt.netty.domain;
 
 import io.netty.channel.Channel;
+import drizzt.netty.protobuf.DrizztProtocol.Msg;
 
 public class ClientRequest {
 
 	private Channel channel;
 
-	private String msg;
+	private Msg msg;
 
 	private long currentTime;
 
-	public ClientRequest(Channel channel, String msg, long currentTime) {
+	public ClientRequest(Channel channel, Msg msg, long currentTime) {
 		this.channel = channel;
 		this.msg = msg;
 		this.currentTime = currentTime;
@@ -24,11 +25,11 @@ public class ClientRequest {
 		this.channel = channel;
 	}
 
-	public String getMsg() {
+	public Msg getMsg() {
 		return msg;
 	}
 
-	public void setMsg(String msg) {
+	public void setMsg(Msg msg) {
 		this.msg = msg;
 	}
 

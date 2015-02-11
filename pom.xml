@@ -33,6 +33,7 @@
 		<asm.version>4.2</asm.version>
 		<cglib.version>3.1</cglib.version>
 		<netty.version>4.0.25.Final</netty.version>
+		<protobuf.version>2.6.1</protobuf.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -49,10 +50,10 @@
 			<version>1.2.2</version>
 		</dependency>
 		<dependency>
-            <groupId>org.mybatis.caches</groupId>
-            <artifactId>mybatis-ehcache</artifactId>
-            <version>1.0.2</version>
-        </dependency>
+			<groupId>org.mybatis.caches</groupId>
+			<artifactId>mybatis-ehcache</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 		<!-- JDBC驱动 -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -185,11 +186,11 @@
 			<version>1.8.3-kuali-4</version>
 		</dependency>
 		<!-- 缓存 -->
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>2.8.1</version>
-        </dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.8.1</version>
+		</dependency>
 		<!-- 其他 -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -211,11 +212,15 @@
 			<artifactId>hirondelle-date4j</artifactId>
 			<version>1.5.1</version>
 		</dependency>
-		<!-- netty -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 			<version>${netty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>${protobuf.version}</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -4,9 +4,6 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.CharsetUtil;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -23,7 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import drizzt.netty.handlers.StringProtocolInitalizer;
+import drizzt.netty.handlers.DrizztProtocolInitalizer;
 
 @Configuration
 public class NettyConfig {
@@ -54,7 +51,7 @@ public class NettyConfig {
 	
 	@Autowired
 	@Qualifier("springProtocolInitializer")
-	private StringProtocolInitalizer protocolInitalizer;
+	private DrizztProtocolInitalizer protocolInitalizer;
 
 	@SuppressWarnings("unchecked")
 	@Bean(name = "serverBootstrap")
@@ -95,16 +92,6 @@ public class NettyConfig {
 		return options;
 	}
 
-	@Bean(name = "stringEncoder")
-	public StringEncoder stringEncoder() {
-		return new StringEncoder(CharsetUtil.UTF_8);
-	}
-
-	@Bean(name = "stringDecoder")
-	public StringDecoder stringDecoder() {
-		return new StringDecoder(CharsetUtil.UTF_8);
-	}
-	
 	@Bean(name = "executor")
 	public ThreadPoolExecutor executor(){
 		return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveSecond, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory());

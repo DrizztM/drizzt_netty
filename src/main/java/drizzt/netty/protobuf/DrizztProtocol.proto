@@ -1,0 +1,31 @@
+option optimize_for = SPEED;
+
+option java_package = "drizzt.netty.protobuf"; 
+
+message Msg{
+	optional AuthRequest authRequest=1;
+	optional AuthResponse authResponse=2;
+	optional LocationRequest locationRequest=3;
+}
+
+message AuthRequest {
+	required string appId = 1; 
+	required string developerId = 2; 
+	required string pn = 3; 
+	required string imsi = 4; 
+	required string imei = 5; 
+	required string mac = 6; 
+	required string Bluetooth = 7;
+	required string androidId = 8;
+}
+
+message AuthResponse { 
+	required string resultCode = 1; 
+	required string des = 2; 
+	required string transId = 3;
+}
+
+message LocationRequest { 
+	required string transId = 1;
+	required string location = 2;
+}

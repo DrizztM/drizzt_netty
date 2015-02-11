@@ -8,11 +8,15 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.CharsetUtil;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 
 import org.apache.log4j.Logger;
+
+import drizzt.netty.protobuf.DrizztProtocol;
+import drizzt.netty.protobuf.DrizztProtocol.Msg;
 
 public class TcpClient {
 	private static final Logger logger = Logger.getLogger(TcpClient.class);
@@ -36,10 +40,10 @@ public class TcpClient {
 			@Override
 			protected void initChannel(Channel ch) throws Exception {
 				ChannelPipeline pipeline = ch.pipeline();
-				pipeline.addLast("decoder",
-						new StringDecoder(CharsetUtil.UTF_8));
-				pipeline.addLast("encoder",
-						new StringEncoder(CharsetUtil.UTF_8));
+				pipeline.addLast(new ProtobufVarint32FrameDecoder());
+				pipeline.addLast(new ProtobufDecoder(DrizztProtocol.Msg.getDefaultInstance()));
+				pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
+				pipeline.addLast(new ProtobufEncoder());
 				pipeline.addLast("handler", new TcpClientHandler());
 			}
 		});
@@ -59,7 +63,7 @@ public class TcpClient {
 		return channel;
 	}
 
-	public void sendMsg(String msg) throws Exception {
+	public void sendMsg(Msg msg) throws Exception {
 		if (channel != null) {
 			channel.writeAndFlush(msg).sync();
 		} else {
@@ -68,6 +72,15 @@ public class TcpClient {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new TcpClient().sendMsg("auth");
+		Msg.Builder builder = Msg.newBuilder();
+		builder.getAuthRequestBuilder().setAndroidId("1");
+		builder.getAuthRequestBuilder().setAppId("2222222");
+		builder.getAuthRequestBuilder().setBluetooth("3");
+		builder.getAuthRequestBuilder().setDeveloperId("4");
+		builder.getAuthRequestBuilder().setImei("5");
+		builder.getAuthRequestBuilder().setImsi("6");
+		builder.getAuthRequestBuilder().setMac("7");
+		builder.getAuthRequestBuilder().setPn("8");
+		new TcpClient().sendMsg(builder.build());
 	}
 }
