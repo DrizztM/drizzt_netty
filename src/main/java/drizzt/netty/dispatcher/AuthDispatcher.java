@@ -142,11 +142,11 @@ public class AuthDispatcher implements Runnable {
 					+ clientRequest.getMsg().getAuthRequest().getAppId());
 			if (System.currentTimeMillis() - clientRequest.getCurrentTime() < Integer
 					.parseInt(env.getProperty("dispatcher.timeout"))) {
-				// try {
-				// Thread.sleep(10000);
-				// } catch (InterruptedException e) {
-				// e.printStackTrace();
-				// }
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				Msg.Builder builder = Msg.newBuilder();
 				builder.getAuthResponseBuilder().setDes("成功");
 				builder.getAuthResponseBuilder().setResultCode("1");

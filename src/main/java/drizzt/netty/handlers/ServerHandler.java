@@ -58,8 +58,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
 
 	public void channelRead0(ChannelHandlerContext ctx, Msg msg)
 			throws Exception {
-		Logger.info("收到客户端信息：" + ctx.channel().hashCode() + "_" + msg);
-		ctx.channel().writeAndFlush("18888889527");
+		Msg.Builder builder = Msg.newBuilder();
+		builder.getAuthResponseBuilder().setDes("成功");
+		builder.getAuthResponseBuilder().setResultCode("1");
+		builder.getAuthResponseBuilder().setTransId("123");
+		ctx.channel().writeAndFlush(builder.build());
 		ClientRequest clientRequest = new ClientRequest(ctx.channel(), msg,
 				System.currentTimeMillis());
 		authDispatcher.addAuth(clientRequest);
