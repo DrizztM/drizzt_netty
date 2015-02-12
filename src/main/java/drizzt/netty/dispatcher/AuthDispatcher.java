@@ -33,7 +33,7 @@ public class AuthDispatcher implements Runnable {
 			.getLogger(AuthDispatcher.class);
 
 	@Autowired
-	private ThreadPoolExecutor threadPoolExecutor;
+	private ThreadPoolExecutor authExecutor;
 	@Autowired
 	private Environment env;
 	private Map<Integer, AuthQueue> sessionAQ;
@@ -62,11 +62,11 @@ public class AuthDispatcher implements Runnable {
 					continue;
 				}
 				Worker worker = new Worker(authQueue);
-				threadPoolExecutor.execute(worker);
-				Logger.debug("线程池中线程数目：" + threadPoolExecutor.getPoolSize()
+				authExecutor.execute(worker);
+				Logger.info("线程池中线程数目：" + authExecutor.getPoolSize()
 						+ "，队列中等待执行的任务数目："
-						+ threadPoolExecutor.getQueue().size() + "，已执行完毕的任务数目："
-						+ threadPoolExecutor.getCompletedTaskCount());
+						+ authExecutor.getQueue().size() + "，已执行完毕的任务数目："
+						+ authExecutor.getCompletedTaskCount());
 			}
 			try {
 				Thread.sleep(Integer.parseInt(env

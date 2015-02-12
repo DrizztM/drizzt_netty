@@ -11,7 +11,6 @@ import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,11 +19,9 @@ public class TCPServer {
 	private static final Logger Logger = LoggerFactory.getLogger(TCPServer.class);
 	
 	@Autowired
-	@Qualifier("serverBootstrap")
 	private ServerBootstrap b;
 	
 	@Autowired
-	@Qualifier("tcpSocketAddress")
 	private InetSocketAddress tcpPort;
 
 	private Channel serverChannel;
@@ -39,22 +36,6 @@ public class TCPServer {
 	@PreDestroy
 	public void stop() {
 		serverChannel.close();
-	}
-
-	public ServerBootstrap getB() {
-		return b;
-	}
-
-	public void setB(ServerBootstrap b) {
-		this.b = b;
-	}
-
-	public InetSocketAddress getTcpPort() {
-		return tcpPort;
-	}
-
-	public void setTcpPort(InetSocketAddress tcpPort) {
-		this.tcpPort = tcpPort;
 	}
 
 }

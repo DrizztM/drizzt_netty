@@ -50,11 +50,10 @@ public class NettyConfig {
 	private int keepAliveSecond;
 	
 	@Autowired
-	@Qualifier("springProtocolInitializer")
 	private DrizztProtocolInitalizer protocolInitalizer;
 
 	@SuppressWarnings("unchecked")
-	@Bean(name = "serverBootstrap")
+	@Bean
 	public ServerBootstrap bootstrap() {
 		ServerBootstrap b = new ServerBootstrap();
 		b.group(bossGroup(), workerGroup())
@@ -69,22 +68,22 @@ public class NettyConfig {
 		return b;
 	}
 
-	@Bean(name = "bossGroup", destroyMethod = "shutdownGracefully")
+	@Bean(destroyMethod = "shutdownGracefully")
 	public NioEventLoopGroup bossGroup() {
 		return new NioEventLoopGroup(bossCount);
 	}
 
-	@Bean(name = "workerGroup", destroyMethod = "shutdownGracefully")
+	@Bean(destroyMethod = "shutdownGracefully")
 	public NioEventLoopGroup workerGroup() {
 		return new NioEventLoopGroup(workerCount);
 	}
 
-	@Bean(name = "tcpSocketAddress")
+	@Bean
 	public InetSocketAddress tcpPort() {
 		return new InetSocketAddress(tcpPort);
 	}
 
-	@Bean(name = "tcpChannelOptions")
+	@Bean
 	public Map<ChannelOption<?>, Object> tcpChannelOptions() {
 		Map<ChannelOption<?>, Object> options = new HashMap<ChannelOption<?>, Object>();
 		options.put(ChannelOption.SO_KEEPALIVE, keepAlive);
@@ -92,8 +91,8 @@ public class NettyConfig {
 		return options;
 	}
 
-	@Bean(name = "executor")
-	public ThreadPoolExecutor executor(){
+	@Bean
+	public ThreadPoolExecutor authExecutor(){
 		return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveSecond, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), Executors.defaultThreadFactory());
 	}
 	

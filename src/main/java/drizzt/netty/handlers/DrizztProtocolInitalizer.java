@@ -9,13 +9,11 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import drizzt.netty.protobuf.DrizztProtocol;
 
 @Component
-@Qualifier("springProtocolInitializer")
 public class DrizztProtocolInitalizer extends ChannelInitializer<SocketChannel> {
 
 	@Autowired
